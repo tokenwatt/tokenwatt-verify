@@ -1,0 +1,6 @@
+__pycache__/
+*.egg-info/
+.venv/
+uv.lock
+tokenwatt-verify-results/
+.pytest_cache/
