@@ -30,6 +30,22 @@ tokenwatt-verify run --target env:EP --reference openrouter:anthropic/claude-son
   VERDICT: CONSISTENT with the reference model
 ```
 
+## Local and self-hosted endpoints
+
+Either side can be any OpenAI-compatible server, including one you run yourself (vLLM, SGLang, Ollama,
+llama.cpp). Leave the key unset if the server doesn't require one. For example, to check that a quantized
+build behaves like the full-precision model it was made from:
+
+```
+export EP_URL=http://localhost:8000/v1 EP_MODEL=Qwen/Qwen3-8B-FP8      # the build under test
+export REF_URL=http://localhost:8001/v1 REF_MODEL=Qwen/Qwen3-8B         # the original, on another port
+
+tokenwatt-verify run --target env:EP --reference env:REF --rounds 5
+```
+
+With the same model family on both sides the tokenizer signal stays equal, so the verdict rests on graded
+answers and refusals; see [Limits](#limits).
+
 ## What it compares
 
 | Signal | How | Why it's hard to fake |

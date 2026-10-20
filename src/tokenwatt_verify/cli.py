@@ -99,7 +99,7 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="send probes to an endpoint and a reference, compare")
     r.add_argument("--target", required=True, help="env:<PREFIX>, openrouter:<model>, or a file with URL/KEY/MODEL/API lines")
-    r.add_argument("--reference", required=True, help="the genuine model, usually openrouter:<vendor/model>")
+    r.add_argument("--reference", required=True, help="the genuine model: openrouter:<vendor/model>, env:<PREFIX> or a file (any OpenAI-compatible server)")
     r.add_argument("--probes", help="path to your own probe bank (Python file defining SUITE)")
     r.add_argument("--kinds", help="comma list of probe kinds to run")
     r.add_argument("--rounds", type=int, default=5)

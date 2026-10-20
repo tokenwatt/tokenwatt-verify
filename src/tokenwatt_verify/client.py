@@ -33,17 +33,20 @@ class Endpoint:
             if m:
                 c[m.group(1).upper()] = m.group(2).strip()
         api = c.get("API", "anthropic" if "anthropic" in c.get("URL", "") else "openai").lower()
-        return cls(name, c["URL"].rstrip("/"), c["KEY"], c["MODEL"], api)
+        return cls(name, c["URL"].rstrip("/"), c.get("KEY", ""), c["MODEL"], api)   # KEY optional: local servers
 
     @classmethod
     def from_env(cls, prefix: str) -> "Endpoint":
-        """Read <PREFIX>_URL, <PREFIX>_KEY, <PREFIX>_MODEL and optional <PREFIX>_API from the environment."""
+        """Read <PREFIX>_URL, <PREFIX>_MODEL and optional <PREFIX>_KEY, <PREFIX>_API from the environment.
+
+        The key may be left unset for a local server without authentication (vLLM, SGLang, Ollama, llama.cpp)."""
         import os
         p = prefix.upper()
         try:
-            url, key, model = os.environ[f"{p}_URL"], os.environ[f"{p}_KEY"], os.environ[f"{p}_MODEL"]
+            url, model = os.environ[f"{p}_URL"], os.environ[f"{p}_MODEL"]
         except KeyError as e:
             raise SystemExit(f"missing environment variable {e.args[0]}") from None
+        key = os.environ.get(f"{p}_KEY", "")
         api = os.environ.get(f"{p}_API", "anthropic" if "anthropic" in url else "openai").lower()
         return cls(prefix.lower(), url.rstrip("/"), key, model, api)
 
@@ -98,13 +101,15 @@ def _request(ep: Endpoint, system: str, user: str, max_tokens: int, temperature:
         url = ep.url + ("/messages" if ep.url.endswith("/v1") else "/v1/messages")
         body = {"model": ep.model, "max_tokens": max_tokens, "temperature": temperature, "stream": True,
                 "system": system, "messages": [{"role": "user", "content": user}]}
-        headers = {"x-api-key": ep.key, "Authorization": f"Bearer {ep.key}", "anthropic-version": "2023-06-01"}
+        headers = {"anthropic-version": "2023-06-01"}
+        if ep.key:
+            headers.update({"x-api-key": ep.key, "Authorization": f"Bearer {ep.key}"})
     else:
         url = ep.url + "/chat/completions"
         body = {"model": ep.model, "max_tokens": max_tokens, "temperature": temperature, "stream": True,
                 "stream_options": {"include_usage": True},
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
-        headers = {"Authorization": f"Bearer {ep.key}"}
+        headers = {"Authorization": f"Bearer {ep.key}"} if ep.key else {}
     headers.update({"Content-Type": "application/json", "User-Agent": "Mozilla/5.0 (compatible; tokenwatt-verify)"})
     return urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers, method="POST")
 

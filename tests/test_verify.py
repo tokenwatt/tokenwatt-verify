@@ -74,3 +74,26 @@ def test_endpoint_from_env(monkeypatch):
     monkeypatch.setenv("EP_API", "anthropic")
     ep = Endpoint.parse("env:EP")
     assert (ep.url, ep.model, ep.api) == ("https://api.example.com/v1", "claude-x", "anthropic")
+
+
+def test_local_endpoint_without_key(monkeypatch, tmp_path):
+    from tokenwatt_verify.client import _request
+    monkeypatch.setenv("LOCAL_URL", "http://localhost:8000/v1")
+    monkeypatch.setenv("LOCAL_MODEL", "Qwen/Qwen3-8B")
+    monkeypatch.delenv("LOCAL_KEY", raising=False)
+    ep = Endpoint.parse("env:LOCAL")
+    assert ep.key == "" and ep.api == "openai"
+    req = _request(ep, "sys", "hi", 8, 0.0)
+    assert "Authorization" not in req.headers and req.full_url == "http://localhost:8000/v1/chat/completions"
+    f = tmp_path / "local.txt"
+    f.write_text("URL=http://localhost:11434/v1\nMODEL=qwen3:8b\n")
+    assert Endpoint.parse(str(f)).key == ""
+
+
+def test_key_is_sent_when_set(monkeypatch):
+    from tokenwatt_verify.client import _request
+    monkeypatch.setenv("EP_URL", "https://api.example.com/v1")
+    monkeypatch.setenv("EP_MODEL", "m")
+    monkeypatch.setenv("EP_KEY", "secret")
+    req = _request(Endpoint.parse("env:EP"), "sys", "hi", 8, 0.0)
+    assert req.headers["Authorization"] == "Bearer secret"

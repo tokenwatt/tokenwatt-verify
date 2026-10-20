@@ -4,10 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tokenwatt-verify"
-version = "0.1.0"
+version = "0.1.1"
 description = "Check that an LLM API endpoint (a reseller or relay) serves the model it claims, request by request: capability, tokenizer, refusal and latency fingerprints against the genuine model."
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
 authors = [{ name = "TokenWatt", email = "hello@tokenwatt.io" }]
 keywords = ["llm", "api", "verification", "claude", "openai", "reseller", "proxy", "model substitution", "benchmark"]
@@ -27,6 +28,8 @@ dev = ["pytest>=7"]
 [project.urls]
 Homepage = "https://www.tokenwatt.io"
 Methodology = "https://www.tokenwatt.io/methodology.html"
+Repository = "https://github.com/tokenwatt/tokenwatt-verify"
+Issues = "https://github.com/tokenwatt/tokenwatt-verify/issues"
 
 [project.scripts]
 tokenwatt-verify = "tokenwatt_verify.cli:main"
