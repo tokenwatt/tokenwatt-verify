@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2026-11-10)
 
 - New `conform` command: one reading of an endpoint against the TokenWatt Inference Endpoint Conformance
   draft v0. Checks I1 response shape, I2 tokenizer fingerprint, I3 Anthropic thinking-signature attestation,
