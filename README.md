@@ -60,7 +60,8 @@ cryptographic proofs, B4 reasoning controls, S2 availability (needs probes over 
 
 **Grade** (draft §8): *Nonconforming* if any identity, behaviour or billing check fails; *Incomplete* if one
 could not be completed (outages, an attestation that can't be read); *Conforming with notes* if only warnings
-(e.g. forced `tool_choice` refused with a documented error); else *Conforming*. The grade covers only the checks
+(documented deviations, e.g. forced `tool_choice` refused with an error, or an adjustment the endpoint discloses,
+see below); else *Conforming*. The grade covers only the checks
 that ran; speed is reported, not graded; availability and accuracy are not graded from a single reading.
 Thresholds are versioned (`conform/thresholds.py`) and written into every report.
 
@@ -90,12 +91,21 @@ binding on you. A reading of your own endpoint, or one you have permission to te
 --header 'Name: value'  extra request header (repeatable); values are redacted from the evidence
 --prices prices.json    your listed prices (below); P2, P3 and the spend cap use them
 --cost-header NAME | --cost-field usage.cost   where the endpoint reports a request's billed cost
+--disclosure-header NAME   response header naming parameters the endpoint adjusted (repeatable; see below)
 --probes bank.py [--probe-rounds 2] [--reference ENDPOINT]   I4
 --long-context --context-window N [--max-output N]           B5
 --samples 5 --concurrency 1                                  S1
 --tokenizer-family ID --tokenizer-samples N --corpus-dir DIR  I2
 --checks I1,I2,… / --skip …   --max-spend 2.0   --out DIR   --run-by "who ran it"   --seed N
 ```
+
+**Documented deviations.** Some endpoints change a parameter on purpose, e.g. a router that turns a forced
+`tool_choice` into `auto` for a model that rejects forced calls, or clamps `max_tokens` to the model's limit. If the
+endpoint names each adjusted parameter in a response header, pass that header with `--disclosure-header NAME`
+(repeatable). A deviation the header names on that same response is graded *warn* (documented) instead of *fail*,
+and the finding quotes the header; an undisclosed deviation still fails. Header format: `param=value[, param=value]`,
+for example `--disclosure-header X-CodeRouter-Adjusted` for `X-CodeRouter-Adjusted: tool_choice=auto`. Used by B1
+(`tool_choice`), B2 and B7 (`max_tokens`), B3 (`stop`), B5 (`messages` / `prompt` / `context`) and B7 (`model`).
 
 **Prices** (USD per 1M tokens; tokenwatt-verify ships none, because a reading is checked against the listing
 you saw on the day you saw it):

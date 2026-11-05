@@ -34,6 +34,7 @@ class Options:
     prices_path: str | None = None
     cost_header: str | None = None
     cost_field: str | None = None
+    disclosure_headers: list = field(default_factory=list)
     probes: str | None = None
     probe_rounds: int = 2
     reference: str | None = None
@@ -132,6 +133,19 @@ class Ctx:
                     v = v.get(k) if isinstance(v, dict) else None
                 if isinstance(v, (int, float)):
                     return float(v)
+        return None
+
+    def documented(self, res: Result, *params: str) -> str | None:
+        """'<Header>: <value>' when a configured disclosure header on this response names one of `params`
+        (format `param=value[, param=value]`): the endpoint said it adjusted that parameter. None otherwise."""
+        want = {p.lower() for p in params}
+        for name in self.opts.disclosure_headers:
+            v = (res.headers or {}).get(name.lower())
+            if not v:
+                continue
+            named = {part.split("=", 1)[0].strip().lower() for part in v.replace(";", ",").split(",") if "=" in part}
+            if named & want:
+                return f"{name}: {v}"
         return None
 
     def thinking_param(self) -> dict:

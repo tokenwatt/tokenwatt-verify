@@ -11,6 +11,9 @@ model's reference counts. Faults make it misbehave the way a substituting relay 
   errors_as_200     returns every error with HTTP 200
   drop_unknown_thinking  a router in front of a genuine backend that silently drops thinking blocks whose
                     signature it didn't issue (so an altered signature never reaches the backend)
+  adjust_tool_choice  turns a forced tool_choice into auto (the answer comes back in text)
+  clamp_max_tokens  serves max_tokens < 1 as max_tokens 1 instead of returning 400
+  disclose          with the two above: names each adjusted parameter in X-Mock-Adjusted (param=value, ...)
 
     python tests/mock_endpoint.py --port 8765 --faults gpt_tokens,forge_signature
 """
@@ -29,7 +32,8 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-FAULTS = ("gpt_tokens", "forge_signature", "cut_as_stop", "errors_as_200", "drop_unknown_thinking")
+FAULTS = ("gpt_tokens", "forge_signature", "cut_as_stop", "errors_as_200", "drop_unknown_thinking",
+          "adjust_tool_choice", "clamp_max_tokens", "disclose")
 CAL = re.compile(r"^\[calibration [0-9a-f]+\]\n(.*)\n\nReply with the single word OK and nothing else\.$", re.S)
 NUMBERS = ("one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen "
            "seventeen eighteen nineteen twenty").split()
@@ -156,6 +160,13 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     # ---- plumbing ------------------------------------------------------------------------------------
+    adjusted: list = []
+
+    def _adjust_headers(self) -> dict:
+        if self.adjusted and "disclose" in self.st.faults:
+            return {"X-Mock-Adjusted": ", ".join(self.adjusted)}
+        return {}
+
     def _send(self, status: int, obj, headers: dict | None = None):
         if status >= 400 and "errors_as_200" in self.st.faults:
             status = 200
@@ -163,7 +174,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(data)))
-        for k, v in (headers or {}).items():
+        for k, v in {**(headers or {}), **self._adjust_headers()}.items():
             self.send_header(k, v)
         self.end_headers()
         self.wfile.write(data)
@@ -178,6 +189,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
+        for k, v in self._adjust_headers().items():
+            self.send_header(k, v)
         self.end_headers()
         for ev in events:
             if sse_names and isinstance(ev, dict):
@@ -187,6 +200,7 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.flush()
 
     def do_POST(self):  # noqa: N802
+        self.adjusted = []
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
         if self.path.endswith("/v1/messages"):
             return self.anthropic(body)
@@ -203,6 +217,10 @@ class Handler(BaseHTTPRequestHandler):
             self._error(api, 404, "not_found_error", f"model: {body.get('model')}")
             return True
         mt = body.get("max_tokens")
+        if isinstance(mt, int) and mt < 1 and "clamp_max_tokens" in self.st.faults:
+            body["max_tokens"] = 1
+            self.adjusted.append("max_tokens=1")
+            return False
         if not isinstance(mt, int) or mt < 1:
             self._error(api, 400, "invalid_request_error", "max_tokens: must be greater than or equal to 1")
             return True
@@ -257,8 +275,11 @@ class Handler(BaseHTTPRequestHandler):
         lc = last.get("content")
         tool_result = isinstance(lc, list) and any(b.get("type") == "tool_result" for b in lc)
         tc = body.get("tool_choice") or {}
-        blocks = respond(st, _text_of(lc), tool_result, body.get("tools") or [], tc.get("type") in ("tool", "any"),
-                         bool(body.get("thinking")))
+        forced = tc.get("type") in ("tool", "any")
+        if forced and "adjust_tool_choice" in st.faults:
+            forced = False
+            self.adjusted.append("tool_choice=auto")
+        blocks = respond(st, _text_of(lc), tool_result, body.get("tools") or [], forced, bool(body.get("thinking")))
         content, out, stop = [], 0, "end_turn"
         budget = body["max_tokens"]
         for b in blocks:
@@ -336,8 +357,12 @@ class Handler(BaseHTTPRequestHandler):
             prompt += n + 3
         last = msgs[-1] if msgs else {}
         tc = body.get("tool_choice")
+        forced = isinstance(tc, dict)
+        if forced and "adjust_tool_choice" in st.faults:
+            forced = False
+            self.adjusted.append("tool_choice=auto")
         blocks = respond(st, last.get("content") if isinstance(last.get("content"), str) else "",
-                         last.get("role") == "tool", body.get("tools") or [], isinstance(tc, dict), False)
+                         last.get("role") == "tool", body.get("tools") or [], forced, False)
         text, calls, out, finish = "", [], 0, "stop"
         for b in blocks:
             if b[0] == "tool":

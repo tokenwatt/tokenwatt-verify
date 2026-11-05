@@ -61,7 +61,7 @@ def build_report(ctx, started, finished) -> dict:
                             else "public sample bank", "reference": bool(o.reference), "samples": o.samples,
                             "concurrency": o.concurrency, "tokenizer_samples": o.tokenizer_samples,
                             "max_spend_usd": o.max_spend, "checks": o.checks, "skip": o.skip,
-                            "extra_headers": sorted(o.headers)}},
+                            "extra_headers": sorted(o.headers), "disclosure_headers": o.disclosure_headers}},
         "endpoint": {"base_url": o.base_url, "api": o.api, "model": o.model,
                      "listing": {"context_window": o.context_window, "max_output": o.max_output,
                                  "prices_usd_per_1m": ctx.prices, "prices_source": ctx.price_meta or None}},

@@ -157,6 +157,9 @@ def add_conform_parser(sub) -> None:
     c.add_argument("--prices", help="JSON file with the listed prices (USD per 1M tokens); see README")
     c.add_argument("--cost-header", help="response header that carries the billed cost of a request")
     c.add_argument("--cost-field", help="dotted JSON path of the billed cost in the response, e.g. usage.cost")
+    c.add_argument("--disclosure-header", action="append", default=[], metavar="NAME",
+                   help="response header in which the endpoint discloses parameters it adjusted (param=value, …); a "
+                        "deviation it names is graded warn (documented), not fail. Repeatable")
     c.add_argument("--probes", help="probe bank for I4 (Python file defining SUITE, optionally REFERENCE)")
     c.add_argument("--probe-rounds", type=int, default=2)
     c.add_argument("--reference", help="I4: a reference endpoint answering the same probes (env:/file spec, as in run)")
@@ -199,7 +202,8 @@ def conform(a) -> int:
     if a.long_context and not a.context_window:
         raise SystemExit("--long-context needs --context-window (the advertised window, in tokens)")
     opts = Options(base_url=a.base_url, api=a.api, model=a.model, key=key, auth=a.auth, headers=headers,
-                   prices_path=a.prices, cost_header=a.cost_header, cost_field=a.cost_field, probes=a.probes,
+                   prices_path=a.prices, cost_header=a.cost_header, cost_field=a.cost_field,
+                   disclosure_headers=a.disclosure_header, probes=a.probes,
                    probe_rounds=a.probe_rounds, reference=a.reference, long_context=a.long_context,
                    context_window=a.context_window, max_output=a.max_output, samples=a.samples,
                    concurrency=a.concurrency, tokenizer_family=a.tokenizer_family,

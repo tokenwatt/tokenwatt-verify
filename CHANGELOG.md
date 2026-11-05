@@ -12,6 +12,11 @@
 - Evidence: every HTTP attempt kept in `evidence.jsonl` (keys removed) with its own sha256; `report.json`
   carries a content hash; `verify-report` re-checks both. `report.md` summary.
 - Versioned thresholds (`conform/thresholds.py`), written into every report.
+- `--disclosure-header NAME` (repeatable): a deviation the endpoint discloses on the same response, in a header
+  `param=value[, param=value]` naming the adjusted parameter, is graded warn (a documented deviation) instead of
+  fail, and the finding quotes the header (B1 `tool_choice`; B2, B7 `max_tokens`; B3 `stop`; B5 prompt; B7 `model`).
+  Undisclosed deviations still fail. The mock endpoint has `adjust_tool_choice`, `clamp_max_tokens` and `disclose`
+  modes; the tests require warn when disclosed and fail when not.
 - Tokenizer reference data for 9 tokenizer families and a 16-sample public corpus manifest (texts fetched
   from their pinned sources and hash-checked, not shipped); `corpus` command to prefetch.
 - Prices are supplied by the user (`--prices`); none are shipped.

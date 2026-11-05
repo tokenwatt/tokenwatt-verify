@@ -58,8 +58,12 @@ def b1(ctx) -> dict:
         prob = _tool_problem(rf)
         parts["forced"] = prob or f"get_weather({rf.tool_calls[0]['arguments_raw']})"
         if prob:
-            fails.append("forced tool_choice: " + ("ignored, answered in text instead (a silent text answer)"
-                                                   if not rf.tool_calls else prob))
+            doc = ctx.documented(rf, "tool_choice") if not rf.tool_calls else None
+            if doc:
+                warns.append(f"forced tool_choice answered in text, a documented deviation ({doc})")
+            else:
+                fails.append("forced tool_choice: " + ("ignored, answered in text instead (a silent text answer)"
+                                                       if not rf.tool_calls else prob))
     elif rf.status == 404:
         parts["forced"] = rf.short_error()
         fails.append(f"forced tool_choice: HTTP 404 ({rf.error_message[:100]})")
@@ -89,7 +93,7 @@ def b1(ctx) -> dict:
 # ---------------------------------------------------------------------------------------------------- B2
 def b2(ctx) -> dict:
     p, mt = ctx.proto, THRESHOLDS["B2"]["max_tokens"]
-    seen, bad = {}, []
+    seen, bad, documented = {}, [], []
     for stream in (False, True):
         r = ctx.call(p.request([p.user(TRUNC_ASK)], max_tokens=mt, stream=stream), stream=stream,
                      label="stream" if stream else "non-stream")
@@ -100,12 +104,18 @@ def b2(ctx) -> dict:
             continue
         seen[where] = {"finish": r.finish_raw, "text_chars": len(r.text), "output_tokens": (r.usage or {}).get("output")}
         if r.finish != "length":
-            bad.append(f"{where}: a max_tokens={mt} cut reported as {r.finish_raw!r}, want "
-                       f"{'max_tokens' if p.api == 'anthropic' else 'length'}")
-    d = {"max_tokens": mt, "seen": seen}
+            doc = ctx.documented(r, "max_tokens")
+            if doc:
+                documented.append(f"{where}: finish {r.finish_raw!r} with max_tokens adjusted, a documented deviation ({doc})")
+            else:
+                bad.append(f"{where}: a max_tokens={mt} cut reported as {r.finish_raw!r}, want "
+                           f"{'max_tokens' if p.api == 'anthropic' else 'length'}")
+    d = {"max_tokens": mt, "seen": seen, "documented_deviations": documented}
     over = [w for w, v in seen.items() if (v.get("output_tokens") or 0) > mt]
     if bad:
         return check_result("B2", FAIL, "; ".join(bad), d)
+    if documented:
+        return check_result("B2", WARN, "; ".join(documented), d)
     note = f"; output tokens above max_tokens on {', '.join(over)}" if over else ""
     return check_result("B2", WARN if over else PASS, f"cut reported as {seen['non-stream']['finish']!r} streamed and not"
                         + note, d)
@@ -140,6 +150,10 @@ def b3(ctx) -> dict:
     if got == want:
         return check_result("B3", PASS, f"stop sequence '=' left the hidden reasoning alone: answer {got} correct", d)
     if not r.text.strip() and r.finish in ("stop", "stop_sequence"):
+        doc = ctx.documented(r, "stop", "stop_sequences")
+        if doc:
+            return check_result("B3", WARN, f"empty answer ending in a stop, with the stop sequence adjusted: a "
+                                f"documented deviation ({doc})", d)
         return check_result("B3", FAIL, "empty answer ending in a stop: the stop sequence '=' fired inside the hidden "
                             "reasoning", d)
     if r.finish == "length":
@@ -221,7 +235,7 @@ def _recall(ctx, prompt_tokens: int, depths: list, window: int | None, label: st
 def b5(ctx) -> dict:
     th = THRESHOLDS["B5"]
     o = ctx.opts
-    d, fails, notes = {}, [], []
+    d, fails, notes, documented = {}, [], [], []
 
     def judge(part: str, r, info: dict):
         d[part] = info
@@ -232,8 +246,14 @@ def b5(ctx) -> dict:
             return
         rep = info["reported_prompt_tokens"]
         if rep is not None and rep < th["min_reported_share"] * info["estimated_prompt_tokens"]:
-            fails.append(f"{part}: {rep:,} prompt tokens billed for a ~{info['estimated_prompt_tokens']:,}-token prompt "
-                         "(content was cut or compressed before the model)")
+            doc = ctx.documented(r, "messages", "prompt", "context")
+            msg = (f"{part}: {rep:,} prompt tokens billed for a ~{info['estimated_prompt_tokens']:,}-token prompt "
+                   "(content was cut or compressed before the model)")
+            if doc:
+                notes.append(f"{msg}, a documented deviation ({doc})")
+                documented.append(part)
+            else:
+                fails.append(msg)
         missing = [k for k, v in info["recalled"].items() if not v]
         if missing:
             fails.append(f"{part}: {len(missing)} of 3 facts not recalled")
@@ -258,6 +278,8 @@ def b5(ctx) -> dict:
     d["notes"] = notes
     if fails:
         return check_result("B5", FAIL, "; ".join(fails), d)
+    if documented:
+        return check_result("B5", WARN, "; ".join(n for n in notes if "documented" in n), d)
     done = "short (~{:,} tokens)".format(d["short"]["estimated_prompt_tokens"])
     if "long" in d:
         return check_result("B5", PASS, f"facts at 25/50/90% recalled at ~{d['long']['estimated_prompt_tokens']:,} tokens "
@@ -351,9 +373,14 @@ def b7(ctx) -> dict:
         if r.transport_error:
             warns.append(f"{what}: {r.transport_error[:80]}")
         elif r.status == 200:
-            fails.append(f"{what}: " + ("error returned with HTTP 200" if r.error_in_200 else
-                                        "accepted with HTTP 200" + (" and answered (a model that doesn't exist was served)"
-                                                                    if what == "unknown model" else "")))
+            doc = None if r.error_in_200 else ctx.documented(r, "model" if what == "unknown model" else "max_tokens")
+            if doc:
+                warns.append(f"{what}: accepted with HTTP 200 and the parameter adjusted, a documented deviation ({doc})")
+                parts[what]["documented"] = doc
+            else:
+                fails.append(f"{what}: " + ("error returned with HTTP 200" if r.error_in_200 else
+                                            "accepted with HTTP 200" + (" and answered (a model that doesn't exist was "
+                                                                        "served)" if what == "unknown model" else "")))
         elif r.status >= 500:
             fails.append(f"{what}: client error reported as HTTP {r.status}")
         elif r.status not in want:

@@ -91,6 +91,31 @@ def test_router_that_drops_unknown_thinking_is_incomplete_not_fail(mock, tmp_pat
     assert rep["grade"]["grade"] == "Incomplete"
 
 
+def test_undisclosed_adjustments_fail(mock, tmp_path):
+    for api, model in (("anthropic", "claude-sonnet-5-5"), ("openai", "gpt-5.5")):
+        rep, c, _ = reading(mock(["adjust_tool_choice", "clamp_max_tokens"], model=model), tmp_path / api, api=api,
+                            model=model, checks=["B1", "B7"])
+        assert c["B1"]["status"] == "fail" and "silent text answer" in c["B1"]["summary"]
+        assert c["B7"]["status"] == "fail" and "invalid max_tokens: accepted with HTTP 200" in c["B7"]["summary"]
+
+
+def test_disclosed_adjustments_are_documented_deviations(mock, tmp_path):
+    for api, model in (("anthropic", "claude-sonnet-5-5"), ("openai", "gpt-5.5")):
+        rep, c, _ = reading(mock(["adjust_tool_choice", "clamp_max_tokens", "disclose"], model=model), tmp_path / api,
+                            api=api, model=model, checks=["B1", "B7"], disclosure_headers=["X-Mock-Adjusted"])
+        assert c["B1"]["status"] == "warn" and "X-Mock-Adjusted: tool_choice=auto" in c["B1"]["summary"]
+        assert c["B7"]["status"] == "warn" and "X-Mock-Adjusted: max_tokens=1" in c["B7"]["summary"]
+        assert rep["grade"]["grade"] == "Conforming with notes"
+
+
+def test_disclosure_counts_only_when_the_header_is_configured_and_names_the_parameter(mock, tmp_path):
+    url = mock(["adjust_tool_choice", "clamp_max_tokens", "disclose"])
+    _, c, _ = reading(url, tmp_path / "a", checks=["B1", "B7"])                  # header sent, option not given
+    assert c["B1"]["status"] == "fail" and c["B7"]["status"] == "fail"
+    _, c, _ = reading(url, tmp_path / "b", checks=["B1"], disclosure_headers=["X-Other-Adjusted"])
+    assert c["B1"]["status"] == "fail"
+
+
 def test_cut_reported_as_stop_fails_b2(mock, tmp_path):
     for api in ("anthropic", "openai"):
         rep, c, _ = reading(mock(["cut_as_stop"]), tmp_path / api, api=api, checks=["B2"])
@@ -208,6 +233,20 @@ def test_model_name_matching():
 
 def test_spread_keeps_type_mix():
     assert spread(list("abcdefgh"), 4) == ["a", "c", "e", "g"]
+
+
+def test_disclosure_header_parsing():
+    from types import SimpleNamespace
+
+    from tokenwatt_verify.conform.runner import Ctx
+    ctx = Ctx.__new__(Ctx)
+    ctx.opts = SimpleNamespace(disclosure_headers=["X-Router-Adjusted"])
+    res = SimpleNamespace(headers={"x-router-adjusted": "tool_choice=auto, max_tokens=8192"})
+    assert ctx.documented(res, "max_tokens") == "X-Router-Adjusted: tool_choice=auto, max_tokens=8192"
+    assert ctx.documented(res, "TOOL_CHOICE")
+    assert ctx.documented(res, "stop") is None
+    assert ctx.documented(SimpleNamespace(headers={"x-router-adjusted": "tool_choice"}), "tool_choice") is None  # no =
+    assert ctx.documented(SimpleNamespace(headers={}), "tool_choice") is None
 
 
 def test_grade_table():
