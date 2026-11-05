@@ -1,0 +1,288 @@
+{
+ "name": "tokenwatt-verify tokenizer corpus (public subset of the TokenWatt tokenizer-tax corpus v1)",
+ "version": "2026-11-05.1",
+ "built": "2026-11-05",
+ "note": "Texts are not redistributed: each sample is fetched from its pinned source and checked against its sha256. Licenses are the sources' own; the corpus is used only to count tokens.",
+ "items": [
+  {
+   "id": "py-flask-sessions",
+   "type": "python",
+   "chars": 14955,
+   "bytes": 14955,
+   "sha256": "26fa7cc311b841f8409ad93933d3a3a52b068150c6f15fc3cd0c107e7a9aaf9d",
+   "source": {
+    "kind": "file",
+    "repo": "pallets/flask",
+    "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+    "path": "src/flask/sessions.py",
+    "license": "BSD-3-Clause",
+    "url": "https://github.com/pallets/flask/blob/49943b5a94413a530761350f04e896f76e8d620e/src/flask/sessions.py",
+    "raw_url": "https://raw.githubusercontent.com/pallets/flask/49943b5a94413a530761350f04e896f76e8d620e/src/flask/sessions.py"
+   }
+  },
+  {
+   "id": "py-requests-auth",
+   "type": "python",
+   "chars": 12107,
+   "bytes": 12107,
+   "sha256": "fdc8bb34a8a5a088b169ca13277d107b0bc94ee63ed5e89dd4f5569d9b2bb04c",
+   "source": {
+    "kind": "file",
+    "repo": "psf/requests",
+    "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+    "path": "src/requests/auth.py",
+    "license": "Apache-2.0",
+    "url": "https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/auth.py",
+    "raw_url": "https://raw.githubusercontent.com/psf/requests/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/auth.py"
+   }
+  },
+  {
+   "id": "ts-hono-base",
+   "type": "ts_js",
+   "chars": 16915,
+   "bytes": 16915,
+   "sha256": "6926b98c976330e7f27de861bfa1566cb31c4937bdf8a07f4c6937b5456e4fc7",
+   "source": {
+    "kind": "file",
+    "repo": "honojs/hono",
+    "commit": "8b7f9e97d661dbc8e933cf81dc36fec8d35b9146",
+    "path": "src/hono-base.ts",
+    "license": "MIT",
+    "url": "https://github.com/honojs/hono/blob/8b7f9e97d661dbc8e933cf81dc36fec8d35b9146/src/hono-base.ts",
+    "raw_url": "https://raw.githubusercontent.com/honojs/hono/8b7f9e97d661dbc8e933cf81dc36fec8d35b9146/src/hono-base.ts"
+   }
+  },
+  {
+   "id": "js-express-application",
+   "type": "ts_js",
+   "chars": 13953,
+   "bytes": 13953,
+   "sha256": "6d7e08355025786982d17042fc0355b6a5e9339545dc27e2782b3aaa28a7bc04",
+   "source": {
+    "kind": "file",
+    "repo": "expressjs/express",
+    "commit": "43fca52d28a422c8be48fd489cbd4f2d6152bab6",
+    "path": "lib/application.js",
+    "license": "MIT",
+    "url": "https://github.com/expressjs/express/blob/43fca52d28a422c8be48fd489cbd4f2d6152bab6/lib/application.js",
+    "raw_url": "https://raw.githubusercontent.com/expressjs/express/43fca52d28a422c8be48fd489cbd4f2d6152bab6/lib/application.js"
+   }
+  },
+  {
+   "id": "go-gin-routergroup",
+   "type": "go",
+   "chars": 10753,
+   "bytes": 10753,
+   "sha256": "f3287d308b353162d049dec7ae1d4fa92fdd85b4c8c4f1d8d658673279538a10",
+   "source": {
+    "kind": "file",
+    "repo": "gin-gonic/gin",
+    "commit": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+    "path": "routergroup.go",
+    "license": "MIT",
+    "url": "https://github.com/gin-gonic/gin/blob/0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646/routergroup.go",
+    "raw_url": "https://raw.githubusercontent.com/gin-gonic/gin/0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646/routergroup.go"
+   }
+  },
+  {
+   "id": "go-cobra-args",
+   "type": "go",
+   "chars": 4477,
+   "bytes": 4477,
+   "sha256": "15b870d1e8a0a10341675ddee8e20bef92a21883257b6b3b11110944a573a2e7",
+   "source": {
+    "kind": "file",
+    "repo": "spf13/cobra",
+    "commit": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+    "path": "args.go",
+    "license": "Apache-2.0",
+    "url": "https://github.com/spf13/cobra/blob/adbc8813901bba65827259daa8e22ff94ec1f30e/args.go",
+    "raw_url": "https://raw.githubusercontent.com/spf13/cobra/adbc8813901bba65827259daa8e22ff94ec1f30e/args.go"
+   }
+  },
+  {
+   "id": "rs-ripgrep-main",
+   "type": "rust",
+   "chars": 18479,
+   "bytes": 18479,
+   "sha256": "9c02560a2d6f3ec56386825d5b57573d772bcaf77906f88149da25f7c7801e58",
+   "source": {
+    "kind": "file",
+    "repo": "BurntSushi/ripgrep",
+    "commit": "91f5d22ef48bde459d90a8c7dbeab416e97d0f2b",
+    "path": "crates/core/main.rs",
+    "license": "Unlicense OR MIT",
+    "url": "https://github.com/BurntSushi/ripgrep/blob/91f5d22ef48bde459d90a8c7dbeab416e97d0f2b/crates/core/main.rs",
+    "raw_url": "https://raw.githubusercontent.com/BurntSushi/ripgrep/91f5d22ef48bde459d90a8c7dbeab416e97d0f2b/crates/core/main.rs"
+   }
+  },
+  {
+   "id": "rs-serde-json-value-index",
+   "type": "rust",
+   "chars": 8734,
+   "bytes": 8734,
+   "sha256": "f1404ed12e795a5553da4bdf72835c441a5e0cc0f6e794fee875eaa887d65319",
+   "source": {
+    "kind": "file",
+    "repo": "serde-rs/json",
+    "commit": "8c535a260ce561eaab4111aafc29038eb9f77ff3",
+    "path": "src/value/index.rs",
+    "license": "MIT OR Apache-2.0",
+    "url": "https://github.com/serde-rs/json/blob/8c535a260ce561eaab4111aafc29038eb9f77ff3/src/value/index.rs",
+    "raw_url": "https://raw.githubusercontent.com/serde-rs/json/8c535a260ce561eaab4111aafc29038eb9f77ff3/src/value/index.rs"
+   }
+  },
+  {
+   "id": "java-gson-jsontreereader",
+   "type": "java",
+   "chars": 13812,
+   "bytes": 13812,
+   "sha256": "c9f98c2ff9d88cb2ac81dd58523415cf2075063585743148b3b9ea6461baca98",
+   "source": {
+    "kind": "file",
+    "repo": "google/gson",
+    "commit": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+    "path": "gson/src/main/java/com/google/gson/internal/bind/JsonTreeReader.java",
+    "license": "Apache-2.0",
+    "url": "https://github.com/google/gson/blob/65df6e5a99747f73d386f3a61d887a0257255e0f/gson/src/main/java/com/google/gson/internal/bind/JsonTreeReader.java",
+    "raw_url": "https://raw.githubusercontent.com/google/gson/65df6e5a99747f73d386f3a61d887a0257255e0f/gson/src/main/java/com/google/gson/internal/bind/JsonTreeReader.java"
+   }
+  },
+  {
+   "id": "java-guava-strings",
+   "type": "java",
+   "chars": 12793,
+   "bytes": 12793,
+   "sha256": "452c6456b0846359cf8d01f98a6be493f8d5d4eafedba19f2d9c0946eac40ee9",
+   "source": {
+    "kind": "file",
+    "repo": "google/guava",
+    "commit": "592a1e6bf8b3370dde28e778931ccdf5242b1d0c",
+    "path": "guava/src/com/google/common/base/Strings.java",
+    "license": "Apache-2.0",
+    "url": "https://github.com/google/guava/blob/592a1e6bf8b3370dde28e778931ccdf5242b1d0c/guava/src/com/google/common/base/Strings.java",
+    "raw_url": "https://raw.githubusercontent.com/google/guava/592a1e6bf8b3370dde28e778931ccdf5242b1d0c/guava/src/com/google/common/base/Strings.java"
+   }
+  },
+  {
+   "id": "md-fastapi-first-steps",
+   "type": "markdown",
+   "chars": 14102,
+   "bytes": 14155,
+   "sha256": "ecc419c9e4ccf1e996db0b196301aab93a8f43d52ddc59a180d4e88f8290c858",
+   "source": {
+    "kind": "file",
+    "repo": "fastapi/fastapi",
+    "commit": "69c67a1672eb7f8e5b3f9019a096f4993338c689",
+    "path": "docs/en/docs/tutorial/first-steps.md",
+    "license": "MIT",
+    "url": "https://github.com/fastapi/fastapi/blob/69c67a1672eb7f8e5b3f9019a096f4993338c689/docs/en/docs/tutorial/first-steps.md",
+    "raw_url": "https://raw.githubusercontent.com/fastapi/fastapi/69c67a1672eb7f8e5b3f9019a096f4993338c689/docs/en/docs/tutorial/first-steps.md"
+   }
+  },
+  {
+   "id": "md-rust-book-panic",
+   "type": "markdown",
+   "chars": 8470,
+   "bytes": 8520,
+   "sha256": "edce46b44eee961106ca49be8b1ce306e400c767304e9005b8763c141a444d1d",
+   "source": {
+    "kind": "file",
+    "repo": "rust-lang/book",
+    "commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+    "path": "src/ch09-01-unrecoverable-errors-with-panic.md",
+    "license": "MIT OR Apache-2.0",
+    "url": "https://github.com/rust-lang/book/blob/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch09-01-unrecoverable-errors-with-panic.md",
+    "raw_url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch09-01-unrecoverable-errors-with-panic.md"
+   }
+  },
+  {
+   "id": "diff-flask-commits",
+   "type": "diff",
+   "chars": 8467,
+   "bytes": 8467,
+   "sha256": "fc52709b541aa4393b13a27d92e159d4b2a8f1c6227ca0f6a64ea270029a0e46",
+   "source": {
+    "kind": "commit_diffs",
+    "repo": "pallets/flask",
+    "license": "BSD-3-Clause",
+    "commits": [
+     "89992954ec71b594b1b911f98977cdc8ad46a057",
+     "7203feabf723edae0286ae5dc64fec8ac4c91735",
+     "de8429ffda8cfb54db175529e2bae72a24e1fa7e",
+     "5ce121dd841e2dc2594d0ed3954278f4101d3521"
+    ],
+    "urls": [
+     "https://github.com/pallets/flask/commit/89992954ec71b594b1b911f98977cdc8ad46a057.diff",
+     "https://github.com/pallets/flask/commit/7203feabf723edae0286ae5dc64fec8ac4c91735.diff",
+     "https://github.com/pallets/flask/commit/de8429ffda8cfb54db175529e2bae72a24e1fa7e.diff",
+     "https://github.com/pallets/flask/commit/5ce121dd841e2dc2594d0ed3954278f4101d3521.diff"
+    ],
+    "join": "concatenated in order"
+   }
+  },
+  {
+   "id": "diff-hono-commits",
+   "type": "diff",
+   "chars": 15679,
+   "bytes": 15693,
+   "sha256": "dcda41a81b6125db8d91c4e846ecf8233799b9fe0a65ec400f00329d43b8281e",
+   "source": {
+    "kind": "commit_diffs",
+    "repo": "honojs/hono",
+    "license": "MIT",
+    "commits": [
+     "8b7f9e97d661dbc8e933cf81dc36fec8d35b9146",
+     "7852e0a1e07f1d686f78f91589c7f9b573ca8bae",
+     "98b35afc0e8d70dc07bf59c3b796c9cbfdd4c7a7",
+     "06a45bc3a639c1f9eea28e16370bc03447f0d7cb",
+     "17ad0e21f5a91c939eeafa3df05793a8ea60f016"
+    ],
+    "urls": [
+     "https://github.com/honojs/hono/commit/8b7f9e97d661dbc8e933cf81dc36fec8d35b9146.diff",
+     "https://github.com/honojs/hono/commit/7852e0a1e07f1d686f78f91589c7f9b573ca8bae.diff",
+     "https://github.com/honojs/hono/commit/98b35afc0e8d70dc07bf59c3b796c9cbfdd4c7a7.diff",
+     "https://github.com/honojs/hono/commit/06a45bc3a639c1f9eea28e16370bc03447f0d7cb.diff",
+     "https://github.com/honojs/hono/commit/17ad0e21f5a91c939eeafa3df05793a8ea60f016.diff"
+    ],
+    "join": "concatenated in order"
+   }
+  },
+  {
+   "id": "prose-en-wikipedia-tea",
+   "type": "prose_en",
+   "chars": 13628,
+   "bytes": 13670,
+   "sha256": "7ee213368731e3cb9ce7a354a27afde80e8e85be8e80a039b3f266b709a9ac12",
+   "source": {
+    "kind": "wikipedia",
+    "lang": "en",
+    "title": "Tea",
+    "revid": 1382092954,
+    "variant": null,
+    "license": "CC BY-SA 4.0",
+    "url": "https://en.wikipedia.org/w/index.php?oldid=1382092954",
+    "rules": "text of <p> elements (no <sup> reference markers), whole paragraphs in order until 12000 bytes"
+   }
+  },
+  {
+   "id": "prose-zh-wikipedia-cha",
+   "type": "prose_zh",
+   "chars": 4441,
+   "bytes": 12770,
+   "sha256": "8b51c2ebe2d78ae7c74401f5784c655b9058bb604bbc2d063efde24597e17488",
+   "source": {
+    "kind": "wikipedia",
+    "lang": "zh",
+    "title": "茶",
+    "revid": 95390285,
+    "variant": "zh-cn",
+    "license": "CC BY-SA 4.0",
+    "url": "https://zh.wikipedia.org/w/index.php?oldid=95390285",
+    "rules": "text of <p> elements (no <sup> reference markers), whole paragraphs in order until 12000 bytes"
+   }
+  }
+ ],
+ "total_chars": 191765,
+ "total_bytes": 200253
+}

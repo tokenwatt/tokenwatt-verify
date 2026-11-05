@@ -1,0 +1,287 @@
+{
+ "name": "tokenwatt-verify tokenizer reference",
+ "version": "2026-11-05.1",
+ "measured": "2026-11-05 (UTC)",
+ "publisher": "TokenWatt",
+ "how_measured": "Requests went through CodeRouter, a product built by the TokenWatt team, with each model named explicitly (no routing, no fallback). Token counts are the providers' own usage figures as returned. Where a public tokenizer exists it was also run locally on the same text; the billed differential matched it within ±1 token per sample.",
+ "method": "count(text) = prompt_tokens(PREFIX + text + SUFFIX) - prompt_tokens(PREFIX + SUFFIX), one user message, no system prompt, no tools; PREFIX carries a fresh 16-hex nonce. Template and role tokens cancel; at most one boundary token remains.",
+ "prefix": "[calibration {nonce}]\n",
+ "suffix": "\n\nReply with the single word OK and nothing else.",
+ "corpus_version": "2026-11-05.1",
+ "families": {
+  "claude-5.5": {
+   "label": "Claude 5.5 (Opus, Sonnet, Haiku 5.5)",
+   "measured_models": [
+    "claude-opus-5.5",
+    "claude-sonnet-5.5",
+    "claude-haiku-5.5"
+   ],
+   "match": [
+    "^claude-(opus|sonnet|haiku)-5[-.]5(-\\d{8})?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 5140,
+    "py-requests-auth": 4495,
+    "ts-hono-base": 6959,
+    "js-express-application": 5557,
+    "go-gin-routergroup": 4603,
+    "go-cobra-args": 1883,
+    "rs-ripgrep-main": 6719,
+    "rs-serde-json-value-index": 3480,
+    "java-gson-jsontreereader": 5537,
+    "java-guava-strings": 4772,
+    "md-fastapi-first-steps": 5401,
+    "md-rust-book-panic": 3115,
+    "diff-flask-commits": 3908,
+    "diff-hono-commits": 6832,
+    "prose-en-wikipedia-tea": 4735,
+    "prose-zh-wikipedia-cha": 5030
+   }
+  },
+  "claude-previous": {
+   "label": "Claude previous tokenizer (Haiku 4.5; Sonnet 4.6 identical on the 5 samples measured)",
+   "measured_models": [
+    "claude-haiku-4.5"
+   ],
+   "match": [
+    "^claude-haiku-4[-.]5(-\\d{8})?$",
+    "^claude-sonnet-4[-.]6(-\\d{8})?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3943,
+    "py-requests-auth": 3534,
+    "ts-hono-base": 5446,
+    "js-express-application": 4592,
+    "go-gin-routergroup": 3174,
+    "go-cobra-args": 1434,
+    "rs-ripgrep-main": 5232,
+    "rs-serde-json-value-index": 2773,
+    "java-gson-jsontreereader": 4032,
+    "java-guava-strings": 3763,
+    "md-fastapi-first-steps": 4214,
+    "md-rust-book-panic": 2476,
+    "diff-flask-commits": 3177,
+    "diff-hono-commits": 5372,
+    "prose-en-wikipedia-tea": 3280,
+    "prose-zh-wikipedia-cha": 5006
+   }
+  },
+  "gpt-5.x-o200k": {
+   "label": "GPT-5.x (o200k_base: GPT-5.5, GPT-5 mini)",
+   "measured_models": [
+    "gpt-5.5",
+    "gpt-5-mini"
+   ],
+   "match": [
+    "^gpt-5[-.]5$",
+    "^gpt-5-mini(-\\d{4}-\\d\\d-\\d\\d)?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3298,
+    "py-requests-auth": 2861,
+    "ts-hono-base": 4424,
+    "js-express-application": 3556,
+    "go-gin-routergroup": 2450,
+    "go-cobra-args": 1141,
+    "rs-ripgrep-main": 4116,
+    "rs-serde-json-value-index": 2276,
+    "java-gson-jsontreereader": 3275,
+    "java-guava-strings": 3187,
+    "md-fastapi-first-steps": 3706,
+    "md-rust-book-panic": 2224,
+    "diff-flask-commits": 2399,
+    "diff-hono-commits": 4285,
+    "prose-en-wikipedia-tea": 2973,
+    "prose-zh-wikipedia-cha": 3732
+   }
+  },
+  "gemini-3": {
+   "label": "Gemini 3 (3 Pro = gemini-3.1-pro-preview, 3 Flash)",
+   "measured_models": [
+    "gemini-3-pro",
+    "gemini-3-flash"
+   ],
+   "match": [
+    "^gemini-3(\\.1)?-pro(-preview)?$",
+    "^gemini-3-flash(-preview)?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3765,
+    "py-requests-auth": 3409,
+    "ts-hono-base": 5068,
+    "js-express-application": 4237,
+    "go-gin-routergroup": 2916,
+    "go-cobra-args": 1343,
+    "rs-ripgrep-main": 4902,
+    "rs-serde-json-value-index": 2611,
+    "java-gson-jsontreereader": 3772,
+    "java-guava-strings": 3544,
+    "md-fastapi-first-steps": 4133,
+    "md-rust-book-panic": 2443,
+    "diff-flask-commits": 3065,
+    "diff-hono-commits": 5236,
+    "prose-en-wikipedia-tea": 2992,
+    "prose-zh-wikipedia-cha": 3403
+   }
+  },
+  "deepseek-v4": {
+   "label": "DeepSeek V4 (V4.1 Flash = deepseek-chat, V4 Pro)",
+   "measured_models": [
+    "deepseek-chat",
+    "deepseek-v4-pro"
+   ],
+   "match": [
+    "^deepseek-chat$",
+    "^deepseek-v4[-.]?1?-flash(-\\d+)?$",
+    "^deepseek-v4-pro(-\\d+)?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3495,
+    "py-requests-auth": 3054,
+    "ts-hono-base": 4543,
+    "js-express-application": 3687,
+    "go-gin-routergroup": 2683,
+    "go-cobra-args": 1194,
+    "rs-ripgrep-main": 4453,
+    "rs-serde-json-value-index": 2442,
+    "java-gson-jsontreereader": 3441,
+    "java-guava-strings": 3195,
+    "md-fastapi-first-steps": 3817,
+    "md-rust-book-panic": 2281,
+    "diff-flask-commits": 2635,
+    "diff-hono-commits": 4485,
+    "prose-en-wikipedia-tea": 2973,
+    "prose-zh-wikipedia-cha": 3022
+   }
+  },
+  "kimi-k2.6": {
+   "label": "Kimi K2.6",
+   "measured_models": [
+    "kimi-k2.6"
+   ],
+   "match": [
+    "^kimi-k2[-.]6$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3281,
+    "py-requests-auth": 2865,
+    "ts-hono-base": 4429,
+    "js-express-application": 3543,
+    "go-gin-routergroup": 2546,
+    "go-cobra-args": 1163,
+    "rs-ripgrep-main": 4178,
+    "rs-serde-json-value-index": 2297,
+    "java-gson-jsontreereader": 3279,
+    "java-guava-strings": 3179,
+    "md-fastapi-first-steps": 3643,
+    "md-rust-book-panic": 2204,
+    "diff-flask-commits": 2380,
+    "diff-hono-commits": 4253,
+    "prose-en-wikipedia-tea": 3018,
+    "prose-zh-wikipedia-cha": 2903
+   }
+  },
+  "glm-5.3": {
+   "label": "GLM-5.3",
+   "measured_models": [
+    "glm-5.3"
+   ],
+   "match": [
+    "^glm-5[-.]3(-fp8)?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3286,
+    "py-requests-auth": 2861,
+    "ts-hono-base": 4358,
+    "js-express-application": 3522,
+    "go-gin-routergroup": 2480,
+    "go-cobra-args": 1160,
+    "rs-ripgrep-main": 4132,
+    "rs-serde-json-value-index": 2300,
+    "java-gson-jsontreereader": 3195,
+    "java-guava-strings": 3093,
+    "md-fastapi-first-steps": 3708,
+    "md-rust-book-panic": 2234,
+    "diff-flask-commits": 2428,
+    "diff-hono-commits": 4267,
+    "prose-en-wikipedia-tea": 3033,
+    "prose-zh-wikipedia-cha": 3059
+   }
+  },
+  "qwen3-2507": {
+   "label": "Qwen3 2507 tokenizer (Qwen Plus, Qwen Max international)",
+   "measured_models": [
+    "qwen-plus",
+    "qwen-max"
+   ],
+   "match": [
+    "^qwen-(plus|max)$",
+    "^qwen3-235b-a22b-instruct-2507(-fp8)?$"
+   ],
+   "source": "billed",
+   "counts": {
+    "py-flask-sessions": 3288,
+    "py-requests-auth": 2901,
+    "ts-hono-base": 4368,
+    "js-express-application": 3534,
+    "go-gin-routergroup": 2488,
+    "go-cobra-args": 1164,
+    "rs-ripgrep-main": 4144,
+    "rs-serde-json-value-index": 2300,
+    "java-gson-jsontreereader": 3209,
+    "java-guava-strings": 3117,
+    "md-fastapi-first-steps": 3852,
+    "md-rust-book-panic": 2289,
+    "diff-flask-commits": 2547,
+    "diff-hono-commits": 4420,
+    "prose-en-wikipedia-tea": 3097,
+    "prose-zh-wikipedia-cha": 3221
+   }
+  },
+  "qwen3.8": {
+   "label": "Qwen3.8 tokenizer (public tokenizer file, run locally; differs from Qwen3 2507 by ~5%)",
+   "measured_models": [],
+   "match": [
+    "^qwen3\\.8(-[0-9.]+[bt])?(-a\\d+b)?(-instruct)?(-fp8)?$"
+   ],
+   "source": "local",
+   "tokenizer": {
+    "repo": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "file": "tokenizer.json",
+    "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "url": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/tokenizer.json"
+   },
+   "counts": {
+    "py-flask-sessions": 3482,
+    "py-requests-auth": 3091,
+    "ts-hono-base": 4779,
+    "js-express-application": 3946,
+    "go-gin-routergroup": 2694,
+    "go-cobra-args": 1265,
+    "rs-ripgrep-main": 4541,
+    "rs-serde-json-value-index": 2496,
+    "java-gson-jsontreereader": 3579,
+    "java-guava-strings": 3351,
+    "md-fastapi-first-steps": 4034,
+    "md-rust-book-panic": 2334,
+    "diff-flask-commits": 2692,
+    "diff-hono-commits": 4729,
+    "prose-en-wikipedia-tea": 3086,
+    "prose-zh-wikipedia-cha": 3024
+   }
+  }
+ },
+ "limits": [
+  "Models that share a tokenizer bill identical counts (Opus, Sonnet and Haiku 5.5 cannot be told apart).",
+  "GLM-5.3, Kimi K2.6 and GPT-5.x differ by under 2% in total; per-sample counts still differ.",
+  "Counts for 'local' families come from the public tokenizer, not from a billed endpoint."
+ ]
+}

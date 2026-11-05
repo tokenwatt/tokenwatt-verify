@@ -14,3 +14,4 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: pytest -q
       - run: tokenwatt-verify --version
+      - run: tokenwatt-verify conform --help
